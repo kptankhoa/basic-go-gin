@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"kptankhoa.dev/basic-go-gin/routes"
-	"net/http"
-
 	"github.com/gin-gonic/gin"
+	"kptankhoa.dev/basic-go-gin/internal/database"
+	"kptankhoa.dev/basic-go-gin/internal/routes"
+	"net/http"
 
 	"kptankhoa.dev/basic-go-gin/configs"
 )
@@ -13,16 +13,10 @@ import (
 func main() {
 	configs.LoadEnv(".env")
 
+	database.ConnectDatabase()
+
 	router := gin.Default()
-
-	router.GET("/ping", func(context *gin.Context) {
-		context.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
-	})
 	setUpRoutes(router)
-
-	fmt.Println(configs.PORT)
 
 	err := router.Run(fmt.Sprintf(":%s", configs.PORT))
 	if err != nil {
@@ -33,6 +27,12 @@ func main() {
 }
 
 func setUpRoutes(r *gin.Engine) {
+	r.GET("/ping", func(context *gin.Context) {
+		context.JSON(http.StatusOK, gin.H{
+			"message": "pong",
+		})
+	})
+
 	api := r.Group("/api")
 	{
 		routes.AlbumRoutes(api)
