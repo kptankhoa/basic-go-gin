@@ -13,7 +13,7 @@ func UserRoutes(r *gin.RouterGroup, db *gorm.DB) {
 	userService := services.NewUserService(userRepository)
 	userHandler := handlers.NewUserHandler(userService)
 
-	userGroup := r.Group("v1/user")
+	userGroup := r.Group("v1/auth")
 	{
 		userGroup.POST("/register", userHandler.Register)
 		userGroup.POST("/login", userHandler.Login)

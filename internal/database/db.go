@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"kptankhoa.dev/basic-go-gin/configs"
-	"kptankhoa.dev/basic-go-gin/internal/models"
+	"kptankhoa.dev/basic-go-gin/internal/auth"
 	"log"
 	"time"
 
@@ -57,5 +57,5 @@ func ConnectDatabase() error {
 }
 
 func autoMigrate(db *gorm.DB) {
-	db.AutoMigrate(&models.User{})
+	db.AutoMigrate(&auth.User{})
 }

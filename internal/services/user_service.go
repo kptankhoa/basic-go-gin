@@ -4,7 +4,6 @@ import (
 	"errors"
 	"gorm.io/gorm"
 	"kptankhoa.dev/basic-go-gin/internal/auth"
-	"kptankhoa.dev/basic-go-gin/internal/models"
 	"kptankhoa.dev/basic-go-gin/internal/repositories"
 )
 
@@ -35,15 +34,17 @@ func (s *UserService) RegisterUser(input RegisterInput) error {
 		return ErrUserExisted
 	}
 	hashedPassword := auth.HashPassword(input.Password)
-	user := models.User{Username: input.Username, Password: hashedPassword}
+	user := auth.User{Username: input.Username, Password: hashedPassword}
 	return s.userRepository.CreateUser(user)
 }
 
-func (s *UserService) LoginUser(input LoginInput) (string, error) {
+func (s *UserService) LoginUser(input LoginInput) (auth.User, string, error) {
 	user, err := s.userRepository.GetUserByUsername(input.Username)
 	if err != nil || auth.HashPassword(input.Password) != user.Password {
-		return "", ErrUserNotFound
+		return user, "", ErrUserNotFound
 	}
 
-	return auth.GenerateToken(user.Username)
+	token, err := auth.GenerateToken(user.Username)
+
+	return user, token, err
 }
